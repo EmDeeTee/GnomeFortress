@@ -34,14 +34,36 @@ void Entity::eval_ai() {
 		move(Game::random_direction()); // NOTE: This might choose out of bound location, causing wasted movement
 }
 
+const std::string Entity::describe() {
+	std::string ret;
+	if (this->name != "")
+		ret += "It's name is " + this->name + "\n";
+	switch (this->type)
+	{
+	case GNOME:
+		ret += "Its a small creature wearing a pointy red hat\n";
+		break;
+	default:
+		break;
+	}
+	if (!this->isAiControlled) {
+		ret += "It seems not to have a mind of its own\n";
+	}
+	return ret;
+}
+
 Entity::Entity() { 
 	type = EMPTY; 
 	pos = MapCoord(0, 0); 
 	isAiControlled = false;
 }
 
-Entity::Entity(MapCoord c, EntityType t, bool ai) {
+Entity::Entity(MapCoord c, EntityType t, bool ai, std::string n) {
 	pos = c;
 	type = t;
 	isAiControlled = ai;
+	name = n;
+	if (n == "") {
+		// TODO: Roll for a name
+	}
 }

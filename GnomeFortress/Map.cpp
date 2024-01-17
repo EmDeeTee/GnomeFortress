@@ -3,6 +3,7 @@
 #include "Player.h"
 
 char Map::cells[MAP_WIDTH][MAP_HEIGHT];
+std::list<Entity> Map::entities = std::list<Entity>();
 
 void Map::place_at_cell(int x, int y, EntityType type) {
 	cells[x][y] = type;
@@ -14,6 +15,22 @@ void Map::place_at_cell(MapCoord c, EntityType type) {
 
 const char Map::get_cell(int x, int y) {
 	return cells[x][y];
+}
+
+const char Map::get_cell(MapCoord c) {
+	return get_cell(c.x, c.y);
+}
+
+Entity& Map::get_entity_in_cell(int x, int y) {
+	for (auto& entity : entities) {
+		if (entity.pos == MapCoord(x, y)) {
+			return entity;
+		}
+	}
+}
+
+Entity& Map::get_entity_in_cell(MapCoord c) {
+	return get_entity_in_cell(c.x, c.y);
 }
 
 void Map::draw() {

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <format>
 
 #include "Game.h"
 #include "Map.h"
@@ -7,13 +8,13 @@
 #if WIN32
 	#include <conio.h>
 #endif 
+#include "Log.h"
+#include <string>
 
-static const int UPDATE_DELAY = 100;
-
-std::list<Entity> Game::entities = std::list<Entity>();
+static const int UPDATE_DELAY = 200;
 
 void Game::update() {
-    for (auto& entity : entities) {
+    for (auto& entity : Map::entities) {
         entity.eval_ai();
     }
     Map::draw();
@@ -37,14 +38,8 @@ void Game::_update_win32() {
             if (key == 'd') {
                 player.move(player.pos.x + 1, player.pos.y);
             }
-            if (key == 'e') { // examine
-                auto c = Map::get_cell(player.pos.x, player.pos.y - 1);
-                if (c == EMPTY)
-                    printf("There is nothing to examine");
-                else
-                    if (c == GNOME)
-                        printf("You see a gnome");
-                getch();
+            if (key == 'e') {
+                examine();
             }
         }
 
@@ -70,10 +65,17 @@ void Game::input() {
 /// returns index of the entity and places it in the world
 /// </summary>
 size_t Game::append_entity(Entity e) {
-    entities.push_back(e);
+    Map::entities.push_back(e);
     Map::place_at_cell(e.pos.x, e.pos.y, e.type);
     e.pos = MapCoord(e.pos.x, e.pos.y);
-    size_t index = entities.size() - 1;
+    size_t index = Map::entities.size() - 1;
+
+    Log::write(
+        "Game::append_entity: name=" + e.name
+        + " ai=" 
+        + std::to_string(e.isAiControlled) 
+        + " index=" + std::to_string(index) 
+    );
 
     return index;
 }
@@ -102,8 +104,6 @@ MapCoord Game::random_direction() {
     std::mt19937 gen(rd()); // NOTE: Those generators should probably be some private field
     std::uniform_int_distribution<> distr(1, 4);
 
-
-
     return direction_from_int(distr(gen));
 }
 
@@ -113,5 +113,37 @@ bool Game::random_choice(int chance) {
     std::uniform_int_distribution<> distr(0, 100);
 
     return distr(gen) < chance;
+}
+
+void Game::examine() {
+    printf("examine\nw - up\ns - down\na - left\nd - right\n");
+    char c = getch();
+    MapCoord dir = MapCoord(0, -1); // UP by default
+    switch (c)
+    {
+    case 'w':
+        dir = MapCoord(0, -1);
+        break;
+    case 's':
+        dir = MapCoord(0, 1);
+        break;
+    case 'a':
+        dir = MapCoord(-1, 0);
+        break;
+    case 'd':
+        dir = MapCoord(1, 0);
+        break;
+    default:
+        break;
+    }
+    MapCoord targetCell = Player::get_player().pos + dir;
+    auto target = Map::get_cell(targetCell);
+    if (target == EMPTY)
+        printf("There is nothing to examine\n");
+    else {
+        Entity& e = Map::get_entity_in_cell(targetCell);
+        printf(e.describe().c_str());
+    }
+    getch();
 }
 

@@ -10,6 +10,11 @@ MapCoord::MapCoord() {
 	this->y = 0;
 }
 
+
 bool operator==(const MapCoord& l, const MapCoord& r) {
 	return (l.x == r.x) && (l.y == r.y);
+}
+
+MapCoord MapCoord::operator+(const MapCoord& o) {
+	return MapCoord(this->x + o.x, this->y + o.y);
 }
