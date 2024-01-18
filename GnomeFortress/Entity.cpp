@@ -41,9 +41,13 @@ const std::string Entity::describe() {
 	switch (this->type)
 	{
 	case GNOME:
-		ret += "Its a small creature wearing a pointy red hat\n";
+		ret += "It's a small creature wearing a pointy red hat. It's a GNOME\n";
+		break;
+	case WALL:
+		ret += "It's a wall\n";
 		break;
 	default:
+		ret += "You don't know this entity\n";
 		break;
 	}
 	if (!this->isAiControlled) {

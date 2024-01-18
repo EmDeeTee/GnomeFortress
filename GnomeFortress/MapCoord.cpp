@@ -15,6 +15,6 @@ bool operator==(const MapCoord& l, const MapCoord& r) {
 	return (l.x == r.x) && (l.y == r.y);
 }
 
-MapCoord MapCoord::operator+(const MapCoord& o) {
-	return MapCoord(this->x + o.x, this->y + o.y);
+MapCoord operator+(const MapCoord& l, const MapCoord& r) {
+	return MapCoord(l.x + r.x, l.y + r.y);
 }

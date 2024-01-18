@@ -8,7 +8,8 @@
 enum EntityType {
 	EMPTY = '.',
 	GNOME = 'g',
-	PLAYER = 'P'
+	PLAYER = 'P',
+	WALL = '|'
 };
 
 class Entity {

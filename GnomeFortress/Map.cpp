@@ -33,6 +33,14 @@ Entity& Map::get_entity_in_cell(MapCoord c) {
 	return get_entity_in_cell(c.x, c.y);
 }
 
+bool Map::get_is_cell_empty(int x, int y) {
+	return cells[x][y] == EMPTY;
+}
+
+bool Map::get_is_cell_empty(const MapCoord& c) {
+	return get_is_cell_empty(c.x, c.y);
+}
+
 void Map::draw() {
 	for (int i = 0; i < MAP_HEIGHT; ++i) {
 		for (int ii = 0; ii < MAP_WIDTH; ++ii) {

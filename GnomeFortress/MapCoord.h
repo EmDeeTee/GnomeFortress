@@ -8,7 +8,7 @@ public:
 	MapCoord();
 
 	friend bool operator==(const MapCoord& l, const MapCoord& r);
-	MapCoord operator+(const MapCoord& o);
+	friend MapCoord operator+(const MapCoord& l, const MapCoord& r);
 };
 
 #endif 

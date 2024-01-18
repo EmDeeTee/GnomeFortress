@@ -39,7 +39,12 @@ void Game::_update_win32() {
                 player.move(player.pos.x + 1, player.pos.y);
             }
             if (key == 'e') {
-                examine();
+                printf("Examine an entity\n");
+                examine(prompt_direction() + player.pos);
+            }
+            if (key == 'b') {
+                printf("Choose where to build\n");
+                build(prompt_direction() + player.pos);
             }
         }
 
@@ -115,8 +120,8 @@ bool Game::random_choice(int chance) {
     return distr(gen) < chance;
 }
 
-void Game::examine() {
-    printf("examine\nw - up\ns - down\na - left\nd - right\n");
+const MapCoord Game::prompt_direction() {
+    printf("w - up\ns - down\na - left\nd - right\n");
     char c = getch();
     MapCoord dir = MapCoord(0, -1); // UP by default
     switch (c)
@@ -136,14 +141,20 @@ void Game::examine() {
     default:
         break;
     }
-    MapCoord targetCell = Player::get_player().pos + dir;
-    auto target = Map::get_cell(targetCell);
-    if (target == EMPTY)
+    return dir;
+}
+
+void Game::examine(const MapCoord& c) {
+    if (Map::get_is_cell_empty(c))
         printf("There is nothing to examine\n");
     else {
-        Entity& e = Map::get_entity_in_cell(targetCell);
+        Entity& e = Map::get_entity_in_cell(c);
         printf(e.describe().c_str());
     }
-    getch();
+    auto _ = getch();
+}
+
+void Game::build(const MapCoord& c) {
+    auto _ = getch();
 }
 
